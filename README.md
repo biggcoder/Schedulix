@@ -1,61 +1,161 @@
 # Schedulix - Custom Container System
 
-A lightweight container system with real-time scheduling and resource visualization.
+A lightweight container runtime with real-time scheduling and resource visualization.
 
-## Prerequisites
+## Project Structure
 
-- Linux operating system (required for namespaces and cgroups)
-- Python 3.8+
-- Node.js and npm (for frontend)
-- GCC compiler
-- Root/sudo access (required for container operations)
-
-## Installation
-
-1. Install Python dependencies:
-```bash
-pip install -r requirements.txt
 ```
-
-2. Install frontend dependencies:
-```bash
-cd forntend
-npm install
+schedulix/
+├── core/                           # Core container runtime
+│   ├── src/
+│   │   ├── container/             # Container implementation
+│   │   │   ├── container.c        # Main container logic
+│   │   │   ├── container.h        # Container headers
+│   │   │   ├── namespace.c        # Namespace isolation
+│   │   │   ├── cgroup.c          # Resource management
+│   │   │   └── network.c         # Network isolation
+│   │   │
+│   │   ├── scheduler/            # Custom scheduler
+│   │   │   ├── scheduler.c       # Scheduler implementation
+│   │   │   ├── scheduler.h       # Scheduler headers
+│   │   │   ├── policy.c          # Scheduling policies
+│   │   │   └── metrics.c         # Performance metrics
+│   │   │
+│   │   └── cli/                  # Command-line tools
+│   │       ├── mini-run.c        # Container runner
+│   │       ├── mini-stop.c       # Container stopper
+│   │       └── mini-stats.c      # Stats viewer
+│   │
+│   ├── include/                  # Public headers
+│   └── CMakeLists.txt           # Build configuration
+│
+├── backend/                      # Stats & Control Backend
+│   ├── src/
+│   │   ├── monitor/             # Resource monitoring
+│   │   │   ├── cpu.py           # CPU stats collector
+│   │   │   ├── memory.py        # Memory stats collector
+│   │   │   └── gpu.py           # GPU stats collector
+│   │   │
+│   │   ├── api/                 # API endpoints
+│   │   │   ├── routes.py        # REST API routes
+│   │   │   └── websocket.py     # WebSocket handlers
+│   │   │
+│   │   └── scheduler/           # Scheduler control
+│   │       ├── controller.py    # Scheduler controller
+│   │       └── policies.py      # Scheduling policies
+│   │
+│   ├── requirements.txt         # Python dependencies
+│   └── main.py                 # Backend entry point
+│
+├── frontend/                    # Visualization Dashboard
+│   ├── src/
+│   │   ├── components/         # React components
+│   │   │   ├── charts/        # Data visualization
+│   │   │   │   ├── Timeline.jsx    # Process timeline
+│   │   │   │   ├── ResourceChart.jsx # Resource usage
+│   │   │   │   └── ProcessTree.jsx  # Process hierarchy
+│   │   │   │
+│   │   │   ├── containers/    # Container management
+│   │   │   │   ├── ContainerList.jsx
+│   │   │   │   ├── ContainerCard.jsx
+│   │   │   │   └── ContainerStats.jsx
+│   │   │   │
+│   │   │   └── common/        # Shared components
+│   │   │       ├── Sidebar.jsx
+│   │   │       └── Header.jsx
+│   │   │
+│   │   ├── pages/            # Page components
+│   │   │   ├── Dashboard.jsx
+│   │   │   ├── Containers.jsx
+│   │   │   ├── Scheduler.jsx
+│   │   │   └── Settings.jsx
+│   │   │
+│   │   ├── hooks/           # Custom React hooks
+│   │   │   ├── useWebSocket.js
+│   │   │   └── useContainer.js
+│   │   │
+│   │   └── utils/          # Utility functions
+│   │       ├── api.js      # API client
+│   │       └── formatters.js
+│   │
+│   ├── public/            # Static assets
+│   │   ├── index.html
+│   │   └── manifest.json
+│   │
+│   └── package.json      # Frontend dependencies
+│
+├── scripts/              # Build and utility scripts
+│   ├── build.sh         # Build script
+│   ├── run.sh           # Run script
+│   └── setup.sh         # Setup script
+│
+└── docs/                # Documentation
+    ├── api.md          # API documentation
+    ├── architecture.md # System architecture
+    └── development.md  # Development guide
 ```
-
-## Running the Application
-
-1. Start the backend server:
-```bash
-python stats-backend.py
-```
-
-2. Start the frontend development server:
-```bash
-cd forntend
-npm start
-```
-
-3. Compile and run the container runtime:
-```bash
-gcc mini-docker.c -o mini-docker
-gcc mini-scheduler.c -o mini-scheduler
-sudo ./mini-scheduler
-```
-
-## Usage
-
-1. Open your browser and navigate to `http://localhost:3000`
-2. Use the web interface to:
-   - Create new containers
-   - Monitor resource usage
-   - View process scheduling
-   - Manage container lifecycle
 
 ## Features
 
-- Process isolation using Linux namespaces
-- Resource management with cgroups
-- Custom scheduling policies
-- Real-time resource monitoring
-- Web-based visualization dashboard 
+- **Custom Container Runtime**
+  - Process isolation using Linux namespaces
+  - Resource management with cgroups
+  - Network isolation with veth pairs
+  - Custom scheduling policies
+
+- **Real-time Monitoring**
+  - CPU, Memory, and GPU usage tracking
+  - Process scheduling visualization
+  - Live container statistics
+
+- **Web Dashboard**
+  - Interactive process timeline
+  - Resource usage charts
+  - Container management interface
+  - Real-time updates via WebSocket
+
+## Setup
+
+1. **Prerequisites**
+   ```bash
+   # Install system dependencies
+   sudo apt-get update
+   sudo apt-get install -y build-essential cmake python3-pip nodejs npm
+   ```
+
+2. **Build Core Runtime**
+   ```bash
+   cd core
+   mkdir build && cd build
+   cmake ..
+   make
+   ```
+
+3. **Setup Backend**
+   ```bash
+   cd backend
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+4. **Setup Frontend**
+   ```bash
+   cd frontend
+   npm install
+   ```
+
+5. **Run the System**
+   ```bash
+   ./scripts/run.sh
+   ```
+
+## Development
+
+- Core runtime is written in C
+- Backend uses Python with FastAPI
+- Frontend uses React with Material-UI and D3.js
+
+## License
+
+MIT License 

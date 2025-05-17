@@ -134,15 +134,24 @@ function ContainerOverview({ containers }) {
 
 // CPU Usage Chart component
 function CPUUsageChart({ timeSeriesData }) {
-  const chartData = Object.entries(timeSeriesData).map(([containerId, series]) => {
-    const latestPoint = series[series.length - 1];
-    return {
-      id: containerId,
-      cpu: latestPoint?.value || 0,
-      timestamp: latestPoint?.timestamp || Date.now()
-    };
+  // Extract all timestamps (union) and sort them
+  const allTimestampsSet = new Set();
+  Object.values(timeSeriesData).forEach(series => {
+    series.forEach(point => allTimestampsSet.add(point.timestamp));
   });
-  
+  const allTimestamps = Array.from(allTimestampsSet).sort();
+
+  // Build chart data points with CPU usage per container per timestamp
+  const chartData = allTimestamps.map(timestamp => {
+    const point = { timestamp };
+    Object.entries(timeSeriesData).forEach(([containerId, series]) => {
+      // Find value for this timestamp, fallback to 0 if not found
+      const dataPoint = series.find(p => p.timestamp === timestamp);
+      point[containerId] = dataPoint ? dataPoint.value : 0;
+    });
+    return point;
+  });
+
   return (
     <div className="bg-white p-4 rounded-lg shadow">
       <h2 className="text-lg font-bold mb-4">CPU Usage</h2>
@@ -153,18 +162,23 @@ function CPUUsageChart({ timeSeriesData }) {
             margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
           >
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="timestamp" tickFormatter={(timestamp) => new Date(timestamp).toLocaleTimeString()} />
+            <XAxis 
+              dataKey="timestamp" 
+              tickFormatter={timestamp => new Date(timestamp).toLocaleTimeString()} 
+              domain={['auto', 'auto']}
+              type="number"
+            />
             <YAxis />
             <Tooltip 
-              labelFormatter={(timestamp) => new Date(timestamp).toLocaleTimeString()}
-              formatter={(value) => [`${value.toFixed(1)}%`, 'CPU']}
+              labelFormatter={timestamp => new Date(timestamp).toLocaleTimeString()}
+              formatter={(value, name) => [`${value.toFixed(1)}%`, name]}
             />
             <Legend />
             {Object.keys(timeSeriesData).map((containerId, idx) => (
               <Line 
                 key={containerId}
                 type="monotone"
-                dataKey="cpu"
+                dataKey={containerId} // dynamically use container id as key
                 name={containerId}
                 stroke={`hsl(${(idx * 60) % 360}, 70%, 50%)`}
                 activeDot={{ r: 8 }}
