@@ -5,94 +5,13 @@ A lightweight container runtime with real-time scheduling and resource visualiza
 ## Project Structure
 
 ```
-schedulix/
-├── core/                           # Core container runtime
-│   ├── src/
-│   │   ├── container/             # Container implementation
-│   │   │   ├── container.c        # Main container logic
-│   │   │   ├── container.h        # Container headers
-│   │   │   ├── namespace.c        # Namespace isolation
-│   │   │   ├── cgroup.c          # Resource management
-│   │   │   └── network.c         # Network isolation
-│   │   │
-│   │   ├── scheduler/            # Custom scheduler
-│   │   │   ├── scheduler.c       # Scheduler implementation
-│   │   │   ├── scheduler.h       # Scheduler headers
-│   │   │   ├── policy.c          # Scheduling policies
-│   │   │   └── metrics.c         # Performance metrics
-│   │   │
-│   │   └── cli/                  # Command-line tools
-│   │       ├── mini-run.c        # Container runner
-│   │       ├── mini-stop.c       # Container stopper
-│   │       └── mini-stats.c      # Stats viewer
-│   │
-│   ├── include/                  # Public headers
-│   └── CMakeLists.txt           # Build configuration
-│
-├── backend/                      # Stats & Control Backend
-│   ├── src/
-│   │   ├── monitor/             # Resource monitoring
-│   │   │   ├── cpu.py           # CPU stats collector
-│   │   │   ├── memory.py        # Memory stats collector
-│   │   │   └── gpu.py           # GPU stats collector
-│   │   │
-│   │   ├── api/                 # API endpoints
-│   │   │   ├── routes.py        # REST API routes
-│   │   │   └── websocket.py     # WebSocket handlers
-│   │   │
-│   │   └── scheduler/           # Scheduler control
-│   │       ├── controller.py    # Scheduler controller
-│   │       └── policies.py      # Scheduling policies
-│   │
-│   ├── requirements.txt         # Python dependencies
-│   └── main.py                 # Backend entry point
-│
-├── frontend/                    # Visualization Dashboard
-│   ├── src/
-│   │   ├── components/         # React components
-│   │   │   ├── charts/        # Data visualization
-│   │   │   │   ├── Timeline.jsx    # Process timeline
-│   │   │   │   ├── ResourceChart.jsx # Resource usage
-│   │   │   │   └── ProcessTree.jsx  # Process hierarchy
-│   │   │   │
-│   │   │   ├── containers/    # Container management
-│   │   │   │   ├── ContainerList.jsx
-│   │   │   │   ├── ContainerCard.jsx
-│   │   │   │   └── ContainerStats.jsx
-│   │   │   │
-│   │   │   └── common/        # Shared components
-│   │   │       ├── Sidebar.jsx
-│   │   │       └── Header.jsx
-│   │   │
-│   │   ├── pages/            # Page components
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── Containers.jsx
-│   │   │   ├── Scheduler.jsx
-│   │   │   └── Settings.jsx
-│   │   │
-│   │   ├── hooks/           # Custom React hooks
-│   │   │   ├── useWebSocket.js
-│   │   │   └── useContainer.js
-│   │   │
-│   │   └── utils/          # Utility functions
-│   │       ├── api.js      # API client
-│   │       └── formatters.js
-│   │
-│   ├── public/            # Static assets
-│   │   ├── index.html
-│   │   └── manifest.json
-│   │
-│   └── package.json      # Frontend dependencies
-│
-├── scripts/              # Build and utility scripts
-│   ├── build.sh         # Build script
-│   ├── run.sh           # Run script
-│   └── setup.sh         # Setup script
-│
-└── docs/                # Documentation
-    ├── api.md          # API documentation
-    ├── architecture.md # System architecture
-    └── development.md  # Development guide
+ Schedulix/
+├── frontend/                 # React-based web dashboard
+├── mini-docker.c            # Container runtime implementation
+├── mini-scheduler.c         # Custom scheduler implementation
+├── stats_backend.py         # FastAPI monitoring backend
+├── requirements.txt         # Python dependencies
+└── Dockerfile              # Container build configuration
 ```
 
 ## Features
