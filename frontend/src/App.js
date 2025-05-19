@@ -1,5 +1,6 @@
 import React from 'react';
 import { ThemeProvider } from '@mui/material/styles';
+import { Box } from '@mui/material';
 import darkTheme from './theme';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Sidebar from './components/Sidebar';
@@ -13,11 +14,9 @@ function App() {
   return (
     <ThemeProvider theme={darkTheme}>
       <BrowserRouter>
-        <div>
-          {/* This is a basic layout, you'll likely want a more sophisticated one */}
-          {/* that positions the sidebar and content properly */}
+        <Box sx={{ display: 'flex' }}>
           <Sidebar />
-          <main>
+          <Box component="main" sx={{ flexGrow: 1, p: 3, ml: '240px' }}>
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/containers" element={<Containers />} />
@@ -25,10 +24,11 @@ function App() {
               <Route path="/logs" element={<Logs />} />
               <Route path="/settings" element={<Settings />} />
             </Routes>
-          </main>
-        </div>
+          </Box>
+        </Box>
       </BrowserRouter>
     </ThemeProvider>
   );
 }
+
 export default App;
