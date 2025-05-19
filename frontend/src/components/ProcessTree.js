@@ -1,77 +1,92 @@
 import React, { useRef, useEffect } from 'react';
 import * as d3 from 'd3';
+import { Box, Typography } from '@mui/material';
 
 const ProcessTree = ({ data }) => {
   const svgRef = useRef();
 
   useEffect(() => {
-    if (!data) return;
+    if (!data) {
+      // Display a message if no data is available
+      const svg = d3.select(svgRef.current);
+      svg.selectAll('*').remove();
+      
+      svg.append('text')
+        .attr('x', '50%')
+        .attr('y', '50%')
+        .attr('text-anchor', 'middle')
+        .attr('dominant-baseline', 'middle')
+        .style('font-size', '14px')
+        .style('fill', '#aaa')
+        .text('No process data available');
+      
+      return;
+    }
 
     const svg = d3.select(svgRef.current);
-    const width = svg.attr('width');
-    const height = svg.attr('height');
+    const width = parseInt(svg.style('width')) || 800;
+    const height = parseInt(svg.style('height')) || 400;
 
     // Clear previous rendering
     svg.selectAll('*').remove();
 
+    // Create a hierarchical layout
     const root = d3.hierarchy(data);
-    const links = root.links();
-    const nodes = root.descendants();
+    
+    // Tree layout
+    const treeLayout = d3.tree()
+      .size([width - 100, height - 100]);
+    
+    treeLayout(root);
 
-    const simulation = d3.forceSimulation(nodes)
-      .force('link', d3.forceLink(links).id(d => d.id).distance(100))
-      .force('charge', d3.forceManyBody().strength(-300))
-      .force('center', d3.forceCenter(width / 2, height / 2));
+    // Create a group for the entire visualization and center it
+    const g = svg.append('g')
+      .attr('transform', `translate(50, 50)`);
 
-    const link = svg.append('g')
-      .attr('stroke', '#999')
-      .attr('stroke-opacity', 0.6)
-      .selectAll('line')
-      .data(links)
-      .join('line');
+    // Add links between nodes
+    g.selectAll('.link')
+      .data(root.links())
+      .join('path')
+      .attr('class', 'link')
+      .attr('d', d3.linkHorizontal()
+        .x(d => d.y * 0.8) // Reduce horizontal spacing
+        .y(d => d.x))
+      .style('fill', 'none')
+      .style('stroke', '#555')
+      .style('stroke-width', 1.5);
 
-    const node = svg.append('g')
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 1.5)
-      .selectAll('circle')
-      .data(nodes)
-      .join('circle')
+    // Add nodes
+    const nodes = g.selectAll('.node')
+      .data(root.descendants())
+      .join('g')
+      .attr('class', 'node')
+      .attr('transform', d => `translate(${d.y * 0.8},${d.x})`);
+
+    // Add circles to nodes
+    nodes.append('circle')
       .attr('r', 5)
-      .attr('fill', d => d.children ? '#555' : '#999');
+      .style('fill', d => d.children ? '#555' : '#999')
+      .style('stroke', '#fff')
+      .style('stroke-width', 1.5);
 
-    const text = svg.append('g')
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 0.5)
-      .selectAll('text')
-      .data(nodes)
-      .join('text')
-      .attr('dy', -10)
-      .attr('x', d => d.children ? -6 : 6)
-      .text(d => d.data.name)
-      .style('font-size', '10px')
-      .style('text-anchor', d => d.children ? 'end' : 'start');
-
-
-    simulation.on('tick', () => {
-      link
-        .attr('x1', d => d.source.x)
-        .attr('y1', d => d.source.y)
-        .attr('x2', d => d.target.x)
-        .attr('y2', d => d.target.y);
-
-      node
-        .attr('cx', d => d.x)
-        .attr('cy', d => d.y);
-
-      text
-        .attr('x', d => d.x)
-        .attr('y', d => d.y);
-    });
+    // Add labels to nodes
+    nodes.append('text')
+      .attr('dy', '0.31em')
+      .attr('x', d => d.children ? -8 : 8)
+      .style('text-anchor', d => d.children ? 'end' : 'start')
+      .style('font-size', '12px')
+      .style('fill', '#fff')
+      .text(d => `${d.data.name} (${d.data.pid})`);
 
   }, [data]);
 
   return (
-    <svg ref={svgRef} width="800" height="600"></svg>
+    <Box sx={{ width: '100%', height: '100%', position: 'relative' }}>
+      <svg 
+        ref={svgRef} 
+        style={{ width: '100%', height: '100%', overflow: 'visible' }}
+      />
+    </Box>
   );
 };
 
