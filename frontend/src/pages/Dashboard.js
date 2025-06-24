@@ -79,7 +79,7 @@ function Dashboard() {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <Typography variant="h6" gutterBottom>Process Tree</Typography>
-                <Box sx={{ height: 400, border: '1px solid rgba(255,255,255,0.1)', borderRadius: 1 }}>
+                <Box sx={{ height: 400, border: '1px solid rgba(53, 179, 210, 0.1)', borderRadius: 1 }}>
                   <ProcessTree data={prepareProcessTreeData(container.processes)} />
                 </Box>
               </Grid>

@@ -1,28 +1,89 @@
 import { createTheme } from '@mui/material/styles';
 
 const darkTheme = createTheme({
+
   palette: {
     mode: 'dark',
     primary: {
-      main: '#90CAF9',
+      main: '#2196f3', // Bright blue for primary actions
+      contrastText: '#fff',
     },
     secondary: {
-      main: '#F48FB1',
+      main: '#03dac6', // Teal-like secondary
     },
     background: {
-      default: '#121212',
-      paper: '#1E1E1E', // Using 'paper' for surface color in Material-UI
+      default: '#0D1117', // Dark navy blue background
+      paper: '#161B22',   // Slightly lighter surface
     },
     text: {
-      primary: '#FFFFFF', // White text on dark background
-      secondary: '#B0B0B0', // Lighter gray for secondary text
+      primary: '#E6EDF3',
+      secondary: '#8B949E',
     },
   },
   typography: {
-    // Customize typography if needed
+    fontFamily: 'Inter, Roboto, "Helvetica Neue", sans-serif',
+    button: {
+      textTransform: 'none', // Prevent all caps on buttons
+      fontWeight: 500,
+    },
+  },
+  shape: {
+    borderRadius: 16, // Rounded corners across components
   },
   components: {
-    // Customize component styles if needed
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 24, // Round buttons
+          paddingLeft: 16,
+          paddingRight: 16,
+        },
+        containedPrimary: {
+          backgroundColor: '#2979ff',
+          '&:hover': {
+            backgroundColor: '#1565c0',
+          },
+        },
+      },
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          borderRadius: 20,
+          backgroundColor: '#1F2937',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+        },
+      },
+    },
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          borderRight: '1px solid #30363D',
+        },
+      },
+    },
+    MuiListItemButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          margin: '4px 8px',
+          '&.Mui-selected': {
+            backgroundColor: '#2c3e50',
+          },
+          '&:hover': {
+            backgroundColor: '#243447',
+          },
+        },
+      },
+    },
+    MuiSelect: {
+      styleOverrides: {
+        root: {
+          borderRadius: 12,
+          backgroundColor: '#1e1e2f',
+        },
+      },
+    },
   },
 });
 

@@ -1,14 +1,10 @@
 import React from 'react';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
-import { Link } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
+import {
+  Drawer, List, ListItemButton, ListItemIcon, ListItemText,
+  Toolbar, Typography, Box
+} from '@mui/material';
 import { styled } from '@mui/material/styles';
-// Let's use Box with text instead of icons for now
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
 
 const drawerWidth = 240;
 
@@ -17,66 +13,76 @@ const StyledDrawer = styled(Drawer)(({ theme }) => ({
   flexShrink: 0,
   '& .MuiDrawer-paper': {
     width: drawerWidth,
-    boxSizing: 'border-box',
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.text.primary,
+    borderRight: '1px solid #2a2a2a',
+    paddingTop: theme.spacing(2),
   },
 }));
 
-// Create simple icon placeholders using Box with text
 const IconBox = ({ letter }) => (
-  <Box 
-    sx={{ 
-      width: 24, 
-      height: 24, 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center',
+  <Box
+    sx={{
+      width: 30,
+      height: 30,
+      borderRadius: '50%',
       backgroundColor: 'primary.main',
-      borderRadius: '4px'
+      color: '#fff',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontWeight: 'bold',
     }}
   >
-    <Typography variant="body2">{letter}</Typography>
+    {letter}
   </Box>
 );
 
+const navItems = [
+  { label: 'Dashboard', path: '/', icon: 'D' },
+  { label: 'Containers', path: '/containers', icon: 'C' },
+  { label: 'Scheduler', path: '/scheduler', icon: 'S' },
+  { label: 'Logs', path: '/logs', icon: 'L' },
+  { label: 'Settings', path: '/settings', icon: 'S' },
+];
+
 function Sidebar() {
+  const location = useLocation();
+
   return (
-    <StyledDrawer
-      variant="permanent"
-      anchor="left"
-    >
+    <StyledDrawer variant="permanent" anchor="left">
+      <Toolbar sx={{ px: 2 }}>
+        <Typography variant="h6" noWrap>
+          MiniDocker
+        </Typography>
+      </Toolbar>
       <List>
-        <ListItem button component={Link} to="/">
-          <ListItemIcon>
-            <IconBox letter="D" />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
-        <ListItem button component={Link} to="/containers">
-          <ListItemIcon>
-            <IconBox letter="C" />
-          </ListItemIcon>
-          <ListItemText primary="Containers" />
-        </ListItem>
-        <ListItem button component={Link} to="/scheduler">
-          <ListItemIcon>
-            <IconBox letter="S" />
-          </ListItemIcon>
-          <ListItemText primary="Scheduler" />
-        </ListItem>
-        <ListItem button component={Link} to="/logs">
-          <ListItemIcon>
-            <IconBox letter="L" />
-          </ListItemIcon>
-          <ListItemText primary="Logs" />
-        </ListItem>
-        <ListItem button component={Link} to="/settings">
-          <ListItemIcon>
-            <IconBox letter="S" />
-          </ListItemIcon>
-          <ListItemText primary="Settings" />
-        </ListItem>
+        {navItems.map(({ label, path, icon }) => (
+          <ListItemButton
+            key={path}
+            component={Link}
+            to={path}
+            selected={location.pathname === path}
+            sx={{
+              mx: 1,
+              my: 0.5,
+              borderRadius: 2,
+              '&.Mui-selected': {
+                backgroundColor: 'primary.main',
+                color: '#fff',
+              },
+              '&:hover': {
+                backgroundColor: 'primary.main',
+                color: '#fff',
+              },
+            }}
+          >
+            <ListItemIcon sx={{ color: 'inherit', minWidth: 40 }}>
+              <IconBox letter={icon} />
+            </ListItemIcon>
+            <ListItemText primary={label} />
+          </ListItemButton>
+        ))}
       </List>
     </StyledDrawer>
   );
